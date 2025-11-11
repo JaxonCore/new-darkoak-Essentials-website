@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Darkoak Essentials Documentation</title>
+<link rel="icon" href="https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/02/Oak_Log_JE5_BE4.png" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    background: url('https://static.planetminecraft.com/files/resource_media/screenshot/1642/skybox-0_10170741.jpg') center/cover fixed,
+                #2e2e2e;
+    color: #fff;
+  }
+
+  header {
+    background: rgba(0,0,0,0.75);
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom: 4px solid #3c2a14;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  .container {
+    display: flex;
+    min-height: calc(100vh - 80px);
+  }
+
+  nav {
+    width: 250px;
+    background: rgba(20,20,20,0.85);
+    padding: 20px;
+    border-right: 4px solid #3c2a14;
+    overflow-y: auto;
+  }
+
+  nav h2 {
+    font-size: 12px;
+    color: #a87532;
+  }
+
+  nav a {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    margin: 10px 0;
+    transition: 0.3s;
+  }
+
+  nav a:hover, nav a.active {
+    color: #ffcc00;
+    text-shadow: 1px 1px 5px #ffcc00;
+  }
+
+  main {
+    flex: 1;
+    padding: 30px;
+    background: rgba(0,0,0,0.65);
+    overflow-y: auto;
+  }
+
+  h1, h2, h3 {
+    color: #ffcc00;
+    text-shadow: 2px 2px #000;
+  }
+
+  pre, code {
+    background: rgba(255,255,255,0.1);
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    overflow-x: auto;
+  }
+
+  footer {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0,0,0,0.85);
+    border-top: 4px solid #3c2a14;
+    font-size: 10px;
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+
+  .nav-buttons a {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    background: #3c2a14;
+    border: 2px solid #a87532;
+    border-radius: 6px;
+    transition: 0.3s;
+  }
+
+  .nav-buttons a:hover {
+    background: #a87532;
+    color: #000;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3c2a14;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+<header>🌲 Dark Oak Essentials Documentation 🌲</header>
+
+<div class="container">
+  <nav>
+    <h2>📜 Docs</h2>
+    <a href="#intro" class="active">Introduction</a>
+    <a href="#features">Features</a>
+    <a href="#installation">Installation</a>
+    <a href="#commands">Commands</a>
+    <a href="#credits">Credits</a>
+  </nav>
+
+  <main id="content">
+    <h1>Loading...</h1>
+  </main>
+</div>
+
+<footer>
+  © 2025 Darkoak Essentials | by Darkoakboat2121
+</footer>
+
+<script>
+  const pages = [
+    { id: "intro", title: "Introduction", file: "intro.md" },
+    { id: "features", title: "Features", file: "features.md" },
+    { id: "installation", title: "Installation", file: "installation.md" },
+    { id: "commands", title: "Commands", file: "commands.md" },
+    { id: "credits", title: "Credits", file: "credits.md" },
+  ];
+
+  const content = document.getElementById("content");
+  const navLinks = document.querySelectorAll("nav a");
+
+  async function loadPage(hash) {
+    let id = hash.replace("#", "") || "intro";
+    const page = pages.find(p => p.id === id) || pages[0];
+    const res = await fetch(page.file);
+    const text = await res.text();
+
+    // Simple markdown-like rendering
+    let html = text
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/\*\*(.*?)\*\*/gim, '<b>$1</b>')
+      .replace(/\*(.*?)\*/gim, '<i>$1</i>')
+      .replace(/`(.*?)`/gim, '<code>$1</code>')
+      .replace(/\n/gim, '<br>');
+
+    const index = pages.indexOf(page);
+    const prev = pages[index - 1];
+    const next = pages[index + 1];
+
+    content.innerHTML = `
+      ${html}
+      <div class="nav-buttons">
+        ${prev ? `<a href="#${prev.id}">← ${prev.title}</a>` : "<span></span>"}
+        ${next ? `<a href="#${next.id}">${next.title} →</a>` : "<span></span>"}
+      </div>
+    `;
+
+    navLinks.forEach(a => a.classList.remove("active"));
+    document.querySelector(\`nav a[href="#${id}"]\`)?.classList.add("active");
+  }
+
+  window.addEventListener("hashchange", () => loadPage(location.hash));
+  window.addEventListener("load", () => loadPage(location.hash));
+</script>
+</body>
+</html>
